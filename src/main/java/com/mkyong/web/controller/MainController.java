@@ -1,17 +1,28 @@
 package com.mkyong.web.controller;
 
+import com.mkyong.web.controller.entities.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 @Controller
 public class MainController {
+
+	@Autowired
+	TestDAO testDao;
 
 	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
 	public ModelAndView defaultPage() {
@@ -74,5 +85,33 @@ public class MainController {
 		return model;
 
 	}
+
+	@ResponseBody
+	@RequestMapping(value="/test", method=RequestMethod.GET)
+	public ArrayList<Test> getRisList (Model model, HttpServletResponse response, HttpServletRequest request) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		String user = null;
+		if (auth instanceof AnonymousAuthenticationToken) {
+			System.out.println("no user");
+			return new ArrayList<Test>();
+		} else {
+			UserDetails userDetail = (UserDetails) auth.getPrincipal();
+			user = userDetail.getUsername();
+			System.out.println(userDetail.getUsername());
+			return testDao.getTempList(user);
+		}
+
+
+	}
+
+//	@RequestMapping(value = "/test", method = RequestMethod.GET)
+//	public ArrayList<Test> test() {
+//		return testDao.getTempList();
+//
+//
+//	}
+
 
 }
