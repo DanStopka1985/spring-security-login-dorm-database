@@ -1,6 +1,7 @@
 package com.mkyong.web.controller;
 
 import com.mkyong.web.controller.entities.Test;
+import org.eclipse.birt.report.engine.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,12 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Controller
 public class MainController {
+
+	private IReportEngine birtReportEngine = null;
 
 	@Autowired
 	TestDAO testDao;
@@ -64,23 +70,23 @@ public class MainController {
 		return model;
 
 	}
-	
+
 	//for 403 access denied page
 	@RequestMapping(value = "/403", method = RequestMethod.GET)
 	public ModelAndView accesssDenied() {
 
 		ModelAndView model = new ModelAndView();
-		
+
 		//check if user is login
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			UserDetails userDetail = (UserDetails) auth.getPrincipal();
 			System.out.println(userDetail);
-		
+
 			model.addObject("username", userDetail.getUsername());
-			
+
 		}
-		
+
 		model.setViewName("403");
 		return model;
 
@@ -106,12 +112,93 @@ public class MainController {
 
 	}
 
-//	@RequestMapping(value = "/test", method = RequestMethod.GET)
-//	public ArrayList<Test> test() {
-//		return testDao.getTempList();
+//	@RequestMapping(value = "/x", method = RequestMethod.GET)
+//	public ModelAndView test(HttpServletResponse response) {
+//
+//
+//
+//		//RedirectView redirectView = new RedirectView("/birt/run?__report=masterreport.rptdesign");
+//		RedirectView redirectView = new RedirectView("/birt/run?__report=application_session_integrationBF.rptdesign");
+//		//RedirectView r1 = new RedirectView()
+//
+//
+//		redirectView.addStaticAttribute("user", "mkyong1");
+//		Properties p = new Properties();
+//		p.setProperty("asd", "123");
+//		redirectView.setAttributes(p);
+//
+//
+////		response.addCookie(new Cookie("COOKIENAME", "The cookie's value"));
+//
+//
+////		response.addHeader("AAAAAA", "AAAAAAA");
+//
+//		//redirectView.setRequestContextAttribute("00000000000000000");
+//
+////		ModelAndView mav = new ModelAndView();
+////
+////		redirectView
+//
+//		return new ModelAndView(redirectView);
 //
 //
 //	}
+
+
+	@ResponseBody
+	@RequestMapping(value="/zzz", method=RequestMethod.GET)
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+
+		//get report name and launch the engine
+		resp.setContentType("text/html");
+		//resp.setContentType( "application/pdf" );
+		//resp.setHeader ("Content-Disposition","inline; filename=test.pdf");
+		String reportName = req.getParameter("ReportName");
+		ServletContext sc = req.getSession().getServletContext();
+		this.birtReportEngine = BirtEngine.getBirtEngine(sc);
+
+
+
+		IReportRunnable design;
+		try
+		{
+			//Open report design
+			//design = birtReportEngine.openReportDesign( sc.getRealPath("/Reports")+"/"+"aaa.rptdesign" );
+			design = birtReportEngine.openReportDesign(Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign").getPath());
+			//design = birtReportEngine.openReportDesign("classpath:Reports/aaa.rptdesign");
+			//create task to run and render report
+
+			//Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign")
+
+			IRunAndRenderTask task = birtReportEngine.createRunAndRenderTask( design );
+			task.getAppContext().put("BIRT_VIEWER_HTTPSERVLET_REQUEST", req );
+
+			//set output options
+			/*HTMLRenderOption options = new HTMLRenderOption();
+			options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_HTML);
+			options.setOutputStream(resp.getOutputStream());
+			options.setImageHandler(new HTMLServerImageHandler());
+			options.setBaseImageURL(req.getContextPath()+"/images");
+			options.setImageDirectory(sc.getRealPath("/images"));
+			*/
+
+			PDFRenderOption options = new PDFRenderOption();
+			options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_PDF);
+			resp.setHeader(	"Content-Disposition", "inline; filename=\"test.pdf\"" );
+			options.setOutputStream(resp.getOutputStream());
+			task.setRenderOption(options);
+
+
+			//run report
+			task.run();
+			task.close();
+		}catch (Exception e){
+
+			e.printStackTrace();
+			throw new ServletException( e );
+		}
+	}
 
 
 }

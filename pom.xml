@@ -109,7 +109,40 @@
 			<version>3.1.0</version>
 		</dependency>
 
-	</dependencies>
+
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.eclipse.birt.runtime</groupId>
+			<artifactId>org.eclipse.birt.runtime</artifactId>
+			<version>4.4.2</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>org.apache.poi</artifactId>
+					<groupId>org.eclipse.birt.runtime</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.9</version>
+		</dependency>
+
+
+		<!--<dependency>-->
+			<!--<groupId>cz.atria</groupId>-->
+			<!--<artifactId>common-lang</artifactId>-->
+		    <!--<version>1.0-SNAPSHOT</version>-->
+		<!--</dependency>-->
+
+
+</dependencies>
 
 	<build>
 		<finalName>SpringSecurity</finalName>
