@@ -146,13 +146,13 @@ public class MainController {
 
 
 	@ResponseBody
-	@RequestMapping(value="/zzz", method=RequestMethod.GET)
+	@RequestMapping(value="/pdf", method=RequestMethod.GET)
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		//get report name and launch the engine
-		resp.setContentType("text/html");
-		//resp.setContentType( "application/pdf" );
+		//resp.setContentType("text/html");
+		resp.setContentType( "application/pdf" );
 		//resp.setHeader ("Content-Disposition","inline; filename=test.pdf");
 		String reportName = req.getParameter("ReportName");
 		ServletContext sc = req.getSession().getServletContext();
@@ -165,8 +165,10 @@ public class MainController {
 		{
 			//Open report design
 			//design = birtReportEngine.openReportDesign( sc.getRealPath("/Reports")+"/"+"aaa.rptdesign" );
-			design = birtReportEngine.openReportDesign(Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign").getPath());
-			//design = birtReportEngine.openReportDesign("classpath:Reports/aaa.rptdesign");
+			//design = birtReportEngine.openReportDesign(Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign").getPath());
+			design = birtReportEngine.openReportDesign("d:\\Reports\\aaa.rptdesign");
+
+
 			//create task to run and render report
 
 			//Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign")
@@ -199,6 +201,65 @@ public class MainController {
 			throw new ServletException( e );
 		}
 	}
+
+	@ResponseBody
+	@RequestMapping(value="/xls", method=RequestMethod.GET)
+	public void getXLS(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+
+		//get report name and launch the engine
+		//resp.setContentType("text/html");
+		resp.setContentType( "application/pdf" );
+		//resp.setHeader ("Content-Disposition","inline; filename=test.pdf");
+		String reportName = req.getParameter("ReportName");
+		ServletContext sc = req.getSession().getServletContext();
+		this.birtReportEngine = BirtEngine.getBirtEngine(sc);
+
+
+
+		IReportRunnable design;
+		try
+		{
+			//Open report design
+			//design = birtReportEngine.openReportDesign( sc.getRealPath("/Reports")+"/"+"aaa.rptdesign" );
+
+			//design = birtReportEngine.openReportDesign(Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign").getPath());
+			design = birtReportEngine.openReportDesign("d:\\Reports\\aaa.rptdesign");
+
+
+			//create task to run and render report
+
+
+
+			IRunAndRenderTask task = birtReportEngine.createRunAndRenderTask( design );
+			task.getAppContext().put("BIRT_VIEWER_HTTPSERVLET_REQUEST", req );
+
+			//set output options
+			/*HTMLRenderOption options = new HTMLRenderOption();
+			options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_HTML);
+			options.setOutputStream(resp.getOutputStream());
+			options.setImageHandler(new HTMLServerImageHandler());
+			options.setBaseImageURL(req.getContextPath()+"/images");
+			options.setImageDirectory(sc.getRealPath("/images"));
+			*/
+
+			PDFRenderOption options = new PDFRenderOption();
+			options.setOutputFormat(HTMLRenderOption.OUTPUT_FORMAT_PDF);
+			resp.setHeader(	"Content-Disposition", "inline; filename=\"test.pdf\"" );
+			options.setOutputStream(resp.getOutputStream());
+			task.setRenderOption(options);
+
+
+			//run report
+			task.run();
+			task.close();
+		}catch (Exception e){
+
+			e.printStackTrace();
+			throw new ServletException( e );
+		}
+	}
+
 
 
 }
