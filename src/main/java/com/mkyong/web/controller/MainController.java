@@ -166,7 +166,7 @@ public class MainController {
 			//Open report design
 			//design = birtReportEngine.openReportDesign( sc.getRealPath("/Reports")+"/"+"aaa.rptdesign" );
 			//design = birtReportEngine.openReportDesign(Thread.currentThread().getContextClassLoader().getResource("Reports/aaa.rptdesign").getPath());
-			design = birtReportEngine.openReportDesign("d:\\Reports\\aaa.rptdesign");
+			design = birtReportEngine.openReportDesign("d:\\Reports\\aaa1.rptdesign");
 
 
 			//create task to run and render report
