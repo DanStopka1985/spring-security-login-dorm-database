@@ -1,4 +1,4 @@
-package qb.controller;
+package qb.birt;
 
 import java.io.InputStream;
 import java.io.IOException;

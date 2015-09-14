@@ -1,4 +1,4 @@
-package qb.controller;
+package qb.dao;
 
 import qb.entities.Test;
 import org.springframework.beans.factory.annotation.Autowired;
