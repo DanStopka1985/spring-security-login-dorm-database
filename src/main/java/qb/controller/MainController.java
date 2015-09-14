@@ -1,6 +1,6 @@
-package com.mkyong.web.controller;
+package qb.controller;
 
-import com.mkyong.web.controller.entities.Test;
+import qb.entities.Test;
 import org.eclipse.birt.report.engine.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

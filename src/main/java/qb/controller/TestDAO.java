@@ -1,6 +1,6 @@
-package com.mkyong.web.controller;
+package qb.controller;
 
-import com.mkyong.web.controller.entities.Test;
+import qb.entities.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

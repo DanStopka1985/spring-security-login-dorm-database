@@ -1,4 +1,4 @@
-package com.mkyong.web.controller;
+package qb.controller;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -14,8 +14,6 @@ import org.eclipse.birt.core.framework.IPlatformContext;
 import org.eclipse.birt.core.framework.Platform;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.engine.api.IReportEngineFactory;
-import org.eclipse.birt.report.engine.api.ReportEngine;
-import javax.servlet.http.HttpServletRequest;
 
 public class BirtEngine {
 

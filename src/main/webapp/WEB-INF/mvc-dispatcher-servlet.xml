@@ -9,7 +9,7 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="com.mkyong.*" />
+	<context:component-scan base-package="qb.*" />
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
