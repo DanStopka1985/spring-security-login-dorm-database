@@ -135,11 +135,6 @@
 		</dependency>
 
 
-		<!--<dependency>-->
-			<!--<groupId>cz.atria</groupId>-->
-			<!--<artifactId>common-lang</artifactId>-->
-		    <!--<version>1.0-SNAPSHOT</version>-->
-		<!--</dependency>-->
 
 
 </dependencies>
